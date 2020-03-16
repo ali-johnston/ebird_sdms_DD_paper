@@ -2,3 +2,5 @@
 figures/*
 output/*
 
+.Rproj.user
+.DS_Store
