@@ -10,11 +10,13 @@ library(dplyr)
 library(purrr)
 library(lubridate)
 library(readr)
+
 # custom functions
 walk(list.files("R", full.names = TRUE), source)
 
-# location of large unzipped eBird data
-ebd_data_folder <- "/Volumes/ebird_data/EBD/"
+# location of large unzipped eBird data should be set in advance with auk_set_ebd_path()
+
+# name of the EBD release
 ebd_release <- "May-2019"
 
 # where to save the processed datasets
@@ -26,8 +28,8 @@ data_tag <- "mayjune_201718_bcr27"
 # zero-filled ebird data ----
 
 # ebd extraction
-orig_ebd <- paste0(ebd_data_folder, "ebd_rel", ebd_release, "/ebd_rel", ebd_release, ".txt")
-orig_sampling <- paste0(ebd_data_folder, "ebd_sampling_rel", ebd_release, "/ebd_sampling_rel", ebd_release, ".txt")
+orig_ebd <- paste0("ebd_rel", ebd_release, "/ebd_rel", ebd_release, ".txt")
+orig_sampling <- paste0("ebd_sampling_rel", ebd_release, "/ebd_sampling_rel", ebd_release, ".txt")
 
 
 # intentionally keep incomplete checklists and all protocols
