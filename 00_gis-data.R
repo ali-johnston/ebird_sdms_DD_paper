@@ -1,18 +1,10 @@
-# setup for auk and MODIS packages
 # download and prepare gis layers for plotting
 # only needs to be run once
 
-library(sf)
-library(auk)
-library(MODIS)
-library(rvest)
 library(rnaturalearth)
-library(dplyr)
 library(readr)
-
-# auk package setup ----
-
-auk_set_ebd_path("******")
+library(dplyr)
+library(sf)
 
 
 # modis setup ----
@@ -23,7 +15,7 @@ EarthdataLogin(usr = "******", pwd = "******")
 
 # gis data ----
 
-f_ne <- "data_proc/gis-data.gpkg"
+f_ne <- "data_proc/gis-data2.gpkg"
 # bcrs
 tmp_dir <- tempdir()
 tmp_bcr <- file.path(tmp_dir, "bcr.zip")
