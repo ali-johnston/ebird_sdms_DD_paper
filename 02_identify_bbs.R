@@ -18,7 +18,9 @@ data_proc_folder <- "data_proc/"
 eb_zf <- str_glue("{data_proc_folder}/ebd_{data_tag}_zf.csv") %>% 
   read_csv()
 
-# potential bbs checklists: at least 40 complete, 3 min stationary counts
+# potential bbs checklists: at least 40 complete, 3 min stationary counts 
+# from same observer on same day
+
 bbs_candidates <- eb_zf %>%
   filter(all_species_reported, 
          protocol_type == "Stationary", 
@@ -30,42 +32,7 @@ bbs_candidates <- eb_zf %>%
   mutate(n_checklists = n()) %>% 
   ungroup() %>% 
   filter(n_checklists >= 40)
-# note: ali has 3 additional checklists here than are 3 min traveling counts
 
-# identify nearest neighbours within each group
-find_nearest_neighbour <- function(df){
-  df_sf <- st_as_sf(df, coords = c("longitude", "latitude"), crs = 4326)
-  
-  dist_mat <- st_distance(df_sf) %>% round()
-  df$min_dist <- apply(dist_mat, 1, function(x){min(x[x > 0])})
-  df$n_near1 <- apply(dist_mat, 1, function(x) {sum((x[x > 0]) < 3300)}) - 1
-  df$n_near2 <- apply(dist_mat, 1, function(x) {sum((x[x > 0]) < 6700)}) - 1
-  df$n_near3 <- apply(dist_mat, 1, function(x) {sum((x[x > 0]) < 10000)}) - 1
-  
-  return(df)
-}
-
-bbs_nn <- bbs_candidates %>% 
-  group_by(observer_id, observation_date) %>% 
-  nest() %>% 
-  ungroup() %>% 
-  mutate(data = map(data, find_nearest_neighbour)) %>% 
-  unnest(cols = data)
-
-# bbs checklists must have at least: 
-# 1 checklist within 2 km
-# 2 within 2 miles
-# 5 within 2 miles
-# 9 within 3 miles
-dist_thresh <- 2000
-threshold1 <- 2
-threshold2 <- 5
-threshold3 <- 9
-bbs_checklists <- bbs_nn %>% 
-  filter(min_dist < 2000,
-         n_near1 > threshold1,
-         n_near2 > threshold2,
-         n_near3 > threshold3)
 
 # calculate time and distance between adjacent stops
 time_dist_between_stops <- function(df) {
@@ -88,6 +55,8 @@ time_dist_between_stops <- function(df) {
   
   return(df)
 }
+
+
 bbs_stop_diff <- bbs_candidates %>% 
   arrange(observer_id, observation_date, time_observations_started) %>% 
   group_by(observer_id, observation_date) %>% 
