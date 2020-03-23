@@ -16,7 +16,9 @@ Read in and prepare the BCR boundaries and mapping layers
 	
 `01_ebird-data.R` 		
 Filter the eBird data from a local version of the eBird Basic Dataset (EBD)
-						select certain species, region, season. 
+select certain species, region, season. 
+
+In order to run this, you will need to download your own local version of the EBD and use `auk_set_ebd_path` to define the folder where this is located. BUT, the full dataset requires hundreds of GB of space and once you have downloaded this it takes 3-4 hours to run `01_ebird-data.R`. So proceed with caution! 
 
 `02_identify_bbs.R` 		
 Identify the BBS routes and stops that are within the eBird dataset
@@ -26,6 +28,8 @@ Split the data into training and validation datasets, based on year, BBS status,
 
 `04_habitat-covariates.R`	
 Extract and process the MODIS landcover information for each checklist
+
+Some complex setup can be required for the MODIS data processing. We recommend that if you want to run this for your own data, you follow the instructions in https://cornelllabofornithology.github.io/ebird-best-practices/
 
 
 ## Running the models
