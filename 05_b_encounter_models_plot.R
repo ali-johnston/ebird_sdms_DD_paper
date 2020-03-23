@@ -15,6 +15,7 @@ library(verification)
 library(edarf)
 library(ggplot2)
 library(ggthemes)
+library(ggpubr)
 library(hexbin)
 library(viridis)
 library(fields)
@@ -217,21 +218,24 @@ pred_compare <- rasterToPoints(r_pred) %>%
   select(-x, -y) %>% 
   gather("run_name", "mod_type", -covs) %>% 
   inner_join(mod_set %>% select(run_id, run_name), by = "run_name") %>% 
-  select(run_id, mod_type, covs)
-pred_compare <- pred_compare %>% 
-  filter(run_id == 1) %>% 
-  mutate(mod_type = covs,
-         run_id = 7) %>% 
-  bind_rows(pred_compare, .) %>% 
+  select(run_id, mod_type, covs) %>%
   arrange(run_id) %>% 
   mutate(run = paste("Model", run_id)) %>%
   filter(run!="Model 7") %>%
   mutate(run = as_factor(run))
 
+# Function to generate correlation coefficient for the charts
+corr_eqn <- function(x,y, digits = 2) {
+  corr_coef <- round(cor(x, y), digits = digits)
+  corr_coef <- expression(paste(italic(r)," = ", corr_coef))
+  return(corr_coef)
+}
+
 # plot
 g_density <- ggplot(pred_compare) + 
   aes(x = covs, y = mod_type) +
   geom_hex(aes(fill = stat(count))) + 
+  stat_cor(method = "pearson") + 
   scale_x_continuous(breaks = c(0, 0.5, 1)) + 
   scale_y_continuous(breaks = c(0, 0.5, 1)) +
   coord_equal() +
@@ -303,5 +307,50 @@ str_glue("{figure_folder}/RF-model_predictions_{sp_code}_{date}.png") %>%
                                 cex = 1, line = 0))
 dev.off()
 
+
+
+# ####################################################################
+# COMPARE ENCOUNTER IN MODEL 2, MODEL 3, MODEL 7
+
+enc1 <- r_pred$maxent %>% getValues()
+enc2 <- r_pred$incomplete %>% getValues()
+enc3 <- r_pred$all %>% getValues()
+enc4 <- r_pred$complete %>% getValues()
+enc5 <- r_pred$sss %>% getValues()
+enc6 <- r_pred$effort %>% getValues()
+enc7 <- r_pred$covs %>% getValues()
+
+plot_hist_pretty <- function(x, br = seq(0, 1, by=0.05), 
+  xlabel="", ylabel="", letter = 1, name = "", 
+  axis_x = FALSE, ...) {
+  h_counts <- hist(x, breaks = br, plot = FALSE)$counts
+  at_y <- pretty(c(0, max(h_counts)), 3)
+  hist(x, breaks = br, main = "", xaxt="n", yaxt="n", xlab=xlabel, ylab=ylabel, xpd = NA)
+  axis(side = 2, at = at_y, xpd = NA)
+  axis(side = 1, at = c(0, 0.5, 1), pos = 0, labels = rep("", 3))
+  if(axis_x) axis(side=1, at=c(0, 0.5, 1), pos = 0)
+  text(x = 0, y = max(at_y)*0.9, labels = LETTERS[letter], font = 2, pos = 4, cex = 0.98, xpd = NA)
+  text(x = 0.07, y = max(at_y)*0.9, labels = name, pos = 4, cex = 0.98, xpd = NA)
+}
+
+
+str_glue("{figure_folder}/encounter-model_predictions_encounter_{sp_code}_{date}.png") %>% 
+  png(width = 13, height = 17, res = 600, pointsize = 9, units = "cm")
+
+par(mfrow=c(4,2), mar = c(2, 5, 2, 1), oma = c(3, 1, 4, 1))
+
+plot(0, 0, col="white", bty="n", axes = FALSE, xlab = "", ylab = "")
+plot_hist_pretty(enc1, letter = 1, name = "Model 1")
+
+plot_hist_pretty(enc2, letter = 2, name = "Model 2")
+plot_hist_pretty(enc3, letter = 3, name = "Model 3")
+
+plot_hist_pretty(enc4, letter = 4, name = "Model 4", ylabel = "Frequency")
+plot_hist_pretty(enc5, letter = 5, name = "Model 5")
+
+plot_hist_pretty(enc6, letter = 6, name = "Model 6", axis_x = TRUE, xlabel = "Estimated encounter rate")
+plot_hist_pretty(enc7, letter = 7, name = "Model 7", axis_x = TRUE, xlabel = "Estimated encounter rate")
+
+dev.off()
 
 
