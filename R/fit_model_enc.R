@@ -185,7 +185,7 @@ fit_model_enc <- function(maxnet, incomplete,
         top_n(n=3, wt = prob) %>%
         mutate(min_10 = floor(as.numeric(time_observations_started*6))/6)
 
-      # finer resolution search to find approximate time of day
+      # finer resolution search to find accurate time of day
       sub <- data %>%
         mutate(min_10 = floor(as.numeric(time_observations_started*6))/6) %>%
         filter(min_10 <= max(pred_t$min_10), min_10 >= min(pred_t$min_10))

@@ -3,7 +3,6 @@
 library(auk)
 library(sf)
 library(raster)
-library(dggridR)
 library(unmarked)
 library(MuMIn)
 library(AICcmodavg)
@@ -18,7 +17,13 @@ library(tidyr)
 library(lubridate)
 library(ggplot2)
 library(ggpubr)
+library(ggthemes)
 library(forcats)
+
+# library(devtools)
+# install_github('r-barnes/dggridR', vignette=TRUE)
+library(dggridR)
+
 
 # resolve namespace conflicts
 select <- dplyr::select
@@ -31,12 +36,14 @@ walk(list.files("R", full.names = TRUE), source)
 set.seed(1)
 # set species for analysis
 species <- "Wood Thrush"
+#species <- "Antrostomus carolinensis"
+
 sp_code <- ebird_species(species, "code")
+
 # setup spatial sampling regime
 sample_spacing <- 5 # approx distance in km used for spatial subsampling cells
 
 date <- Sys.Date()
-# date <- "2020-02-20"
 run_name <- paste0("occu_", sp_code, "_", date)
 
 
@@ -62,7 +69,8 @@ ebird$species_observed <- species_binary
 ebird <- ebird %>%
         select(checklist_id, sampling_event_identifier, observer_id, species_observed, latitude, longitude,
                 protocol_type, all_species_reported, observation_date, time_observations_started,
-                duration_minutes, effort_distance_km, number_observers, type)
+                duration_minutes, effort_distance_km, number_observers, type) %>%
+        mutate(time_observations_started2 = as.numeric(as.character(time_observations_started))^2)
 
 # modis covariates
 habitat <- read_csv(paste0(data_folder, "modis_pland_checklists_", data_tag, ".csv"), 
@@ -88,7 +96,7 @@ ebird_habitat <- inner_join(ebird, habitat, by = "checklist_id") %>%
 
 # map data ----
 
-map_proj <- st_crs(102003)
+map_proj <- st_crs(5070)
 # borders
 f_gpkg <- paste0(data_folder, "gis-data.gpkg")
 ne_land <- read_sf(f_gpkg, "ne_land") %>% 
@@ -131,6 +139,11 @@ print("RUNNING MODELS")
 set.seed(1)
 mod_set$models <- pmap(mod_set, fit_model_occu, data = ebird_habitat,
                       spacing = sample_spacing)
+
+# test <- fit_model_occu(complete = TRUE, incomplete = FALSE, spatial_subsample = TRUE, 
+#               effort_filter = TRUE, effort_covs = TRUE, 
+#               data = ebird_habitat, spacing = sample_spacing)
+
 
 
 print("PREDICT OCCUPANCY")
@@ -255,6 +268,8 @@ if (sp_code == "woothr") {
   plands <- paste0("pland_", c("04", "08", "09", "13"))
 } else if (sp_code == "whiibi") {
   plands <- paste0("pland_", c("00", "08", "09", "11"))
+} else if (sp_code == "chwwid") {
+    plands <- paste0("pland_", c("01", "04", "05", "09"))
 } else {
   stop("species code not valid.")
 }

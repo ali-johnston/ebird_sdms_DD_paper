@@ -67,11 +67,14 @@ fit_model_occu <- function(complete, incomplete,
     plands <- paste0("pland_", c("04", "08", "09", "13"))
   } else if (sp_code == "whiibi") {
     plands <- paste0("pland_", c("00", "08", "09", "11"))
+  } else if (sp_code == "chwwid") {
+    plands <- paste0("pland_", c("01", "04", "05", "09"))
   } else {
     stop("species code not valid.")
   }
   o_covs <- c("day_of_year",
               "time_observations_started", 
+              "time_observations_started2", 
               "duration_minutes", 
               "effort_distance_km", 
               "number_observers", 

@@ -19,25 +19,34 @@ library(readr)
 library(stringr)
 library(lubridate)
 
+# read in functions
 walk(list.files("R", full.names = TRUE), source)
 
 # resolve namespace conflicts
 select <- dplyr::select
 projection <- raster::projection
 
+
+all_species <- c("Wood Thrush", "Chuck-will's-widow")
+
+urban_bias <- TRUE
+
+for(i_species in 1:length(all_species)){
+
 set.seed(1)
+
 # set species for analysis
-species <- "Wood Thrush"
+species <- all_species[i_species]
 sp_code <- ebird_species(species, "code")
+
 # setup spatial sampling regime
-sample_regime <- "together" # spatial subsample regime. see R/hex_sample.R for details 
-sample_spacing <- 5 # approx distance in km used for spatial subsampling cells
-calibrate <- TRUE # whether to calibrate the predictions for random forest
-anchor_model <- 3 # model to use as comparison for validation metrics
+sample_regime <- "together"   # spatial subsample regime. see R/hex_sample.R for details 
+sample_spacing <- 5           # approx distance in km used for spatial subsampling cells
+calibrate <- TRUE             # whether to calibrate the predictions for random forest
+anchor_model <- 3             # model to use as comparison for validation metrics
 
 
 date <- Sys.Date()
-# date <- "2020-02-20"
 run_name <- paste0("SS_RF_", sample_regime, "_", sp_code, "_", date)
 
 
@@ -196,6 +205,8 @@ if(!file.exists(results_file_name)){
       select(-models) %>% unnest(cols = c(ppms)) %>%
       mutate(val_type = "2017")
 
+    print("marker 1")
+
     ppm_2017_bal <- mutate(mod_set, ppms = map(models, validate, data = ebird_test_2017_bal)) %>%
       select(-models) %>% unnest(cols = c(ppms)) %>%
       mutate(val_type = "2017_bal")
@@ -207,7 +218,9 @@ if(!file.exists(results_file_name)){
     if(i==1) all_ppms <- ppms
     if(i>1) all_ppms <- rbind(all_ppms, ppms)
 
-  }
+    print("marker 2")
+
+  } # close i
 
   results_file_name %>% 
     write_csv(all_ppms, .)
@@ -218,6 +231,7 @@ all_ppms <- results_file_name %>%
   read_csv()
 
 # 2017 validation plot
+print("marker 3")
 
 # plot comparing ppms
 ppm_plot <- all_ppms %>% 
@@ -240,8 +254,8 @@ for(i in 1:4){
 
     plot_val_type <- c("2017", "bbs", "2017_bal", "bbs_route")[i]
 
-    ppm_best <- filter(ppm_plot, val_type==plot_val_type, model_name == "Model 6")
-    ppm_bad <- filter(ppm_plot, val_type==plot_val_type, model_name == "Model 2")
+    ppm_best <- filter(ppm_plot, val_type==plot_val_type, model_name == "Model 7")
+    ppm_bad <- filter(ppm_plot, val_type==plot_val_type, model_name == "Model 3")
 
     str_glue("{figure_folder}/enc_RF_sample_size_{plot_val_type}_{sp_code}.png") %>% 
       png(width = 2200, height = 1500, res = 300)
@@ -285,7 +299,7 @@ for(i in 1:4){
           # add legend
           if(i==1) legend(x = 2, y = 0.15, 
                  lwd = 2, col = cols, 
-                 legend = c("Model 2", "Model 6"), cex = 0.8)
+                 legend = c("Model 3", "Model 7"), cex = 0.8)
 
         }
 
@@ -385,8 +399,8 @@ for(i in 1:4){
 
     plot_val_type <- c("2017", "bbs", "2017_bal", "bbs_route")[i]
 
-    ppm_best <- filter(ppm_plot, val_type==plot_val_type, model_name == "Model 6")
-    ppm_bad <- filter(ppm_plot, val_type==plot_val_type, model_name == "Model 2")
+    ppm_best <- filter(ppm_plot, val_type==plot_val_type, model_name == "Model 7")
+    ppm_bad <- filter(ppm_plot, val_type==plot_val_type, model_name == "Model 3")
 
     str_glue("{figure_folder}/enc_RF_sample_size_no_checklists_{plot_val_type}_{sp_code}.png") %>% 
       png(width = 2200, height = 1500, res = 300)
@@ -686,5 +700,5 @@ for(i in 1:4){
 
 }
 
-
+} # close i_species
 
