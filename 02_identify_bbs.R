@@ -6,6 +6,7 @@
 library(lubridate)
 library(sf)
 library(tidyverse)
+library(lwgeom)
 
 # name of data extraction
 data_tag <- "mayjune_201718_bcr27"

@@ -17,7 +17,7 @@ data_proc_folder <- "data_proc/"
 
 # folder to save plots of the data
 figure_folder <- "figures/raw_data/"
-dir.create(figure_folder)
+dir.create(figure_folder, recursive = TRUE)
 
 # name of data extraction
 data_tag <- "mayjune_201718_bcr27"
@@ -123,7 +123,7 @@ eb_all_zf_type %>%
 # ####################################################################
 # PLOT DIFFERENT DATASETS
 
-map_proj <- st_crs(102003)
+map_proj <- st_crs(5070)
 # borders
 f_gpkg <- paste0(data_proc_folder, "gis-data.gpkg")
 ne_land <- read_sf(f_gpkg, "ne_land") %>% 

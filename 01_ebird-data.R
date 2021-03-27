@@ -41,8 +41,7 @@ f_sampling_all <- paste0(data_save, "ebd_sampling_", data_tag, "_all.txt")
 if (!file.exists(f_ebd_all)) {
   ebd_filtered <- auk_ebd(orig_ebd, 
                           file_sampling = orig_sampling) %>% 
-    auk_species(c("Wood Thrush", "Northern Bobwhite", 
-                  "White Ibis")) %>% 
+    auk_species(c("Wood Thrush", "Chuck-will's-widow")) %>%
     # southeastern coastal plain bcr
     auk_bcr(bcr = 27) %>% 
     # june, any year

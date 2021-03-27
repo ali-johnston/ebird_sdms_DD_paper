@@ -4,7 +4,7 @@
 # create prediction surface
 
 library(raster)
-library(velox)
+# library(velox) new error here
 library(fasterize)
 library(sf)
 library(MODIS)
