@@ -333,16 +333,16 @@ plot_hist_pretty <- function(x, br = seq(0, 1, by=0.05),
 str_glue("{figure_folder}/occupancy-model_predictions_detectability_{sp_code}_{date}.png") %>% 
   png(width = 13, height = 13, res = 600, pointsize = 9, units = "cm")
 
-par(mfrow=c(3,2), mar = c(2, 5, 2, 1), oma = c(3, 1, 4, 1))
+  par(mfrow=c(3,2), mar = c(2, 5, 2, 1), oma = c(3, 1, 4, 1))
 
-plot_hist_pretty(det2$Predicted, letter = 1, name = "Model 2")
-plot_hist_pretty(det3$Predicted, letter = 2, name = "Model 3")
+  plot_hist_pretty(det2$Predicted, letter = 1, name = "Model 2")
+  plot_hist_pretty(det3$Predicted, letter = 2, name = "Model 3")
 
-plot_hist_pretty(det4$Predicted, letter = 3, name = "Model 4", ylabel = "Frequency")
-plot_hist_pretty(det5$Predicted, letter = 4, name = "Model 5")
+  plot_hist_pretty(det4$Predicted, letter = 3, name = "Model 4", ylabel = "Frequency")
+  plot_hist_pretty(det5$Predicted, letter = 4, name = "Model 5")
 
-plot_hist_pretty(det6$Predicted, letter = 5, name = "Model 6", axis_x = TRUE, xlabel = "Estimated detectability")
-plot_hist_pretty(det7$Predicted, letter = 6, name = "Model 7", axis_x = TRUE, xlabel = "Estimated detectability")
+  plot_hist_pretty(det6$Predicted, letter = 5, name = "Model 6", axis_x = TRUE, xlabel = "Estimated detectability")
+  plot_hist_pretty(det7$Predicted, letter = 6, name = "Model 7", axis_x = TRUE, xlabel = "Estimated detectability")
 
 dev.off()
 
@@ -441,16 +441,16 @@ occ7 <- mod_set$r_pred[[6]]$occ_prob %>% as.matrix() %>% as.vector()
 str_glue("{figure_folder}/occupancy-model_predictions_occupancy_{sp_code}_{date}.png") %>% 
   png(width = 13, height = 13, res = 600, pointsize = 9, units = "cm")
 
-par(mfrow=c(3,2), mar = c(2, 5, 2, 1), oma = c(3, 1, 4, 1))
+  par(mfrow=c(3,2), mar = c(2, 5, 2, 1), oma = c(3, 1, 4, 1))
 
-plot_hist_pretty(occ2, letter = 1, name = "Model 2")
-plot_hist_pretty(occ3, letter = 2, name = "Model 3")
+  plot_hist_pretty(occ2, letter = 1, name = "Model 2")
+  plot_hist_pretty(occ3, letter = 2, name = "Model 3")
 
-plot_hist_pretty(occ4, letter = 3, name = "Model 4", ylabel = "Frequency")
-plot_hist_pretty(occ5, letter = 4, name = "Model 5")
+  plot_hist_pretty(occ4, letter = 3, name = "Model 4", ylabel = "Frequency")
+  plot_hist_pretty(occ5, letter = 4, name = "Model 5")
 
-plot_hist_pretty(occ6, letter = 5, name = "Model 6", axis_x = TRUE, xlabel = "Estimated occupancy")
-plot_hist_pretty(occ7, letter = 6, name = "Model 7", axis_x = TRUE, xlabel = "Estimated occupancy")
+  plot_hist_pretty(occ6, letter = 5, name = "Model 6", axis_x = TRUE, xlabel = "Estimated occupancy")
+  plot_hist_pretty(occ7, letter = 6, name = "Model 7", axis_x = TRUE, xlabel = "Estimated occupancy")
 
 dev.off()
 
