@@ -1,11 +1,12 @@
 # eBird Analysis WoodThrush
 
-This repository contains the code and data to reproduce the analyses in a paper currently in review: 
-Johnston, Hochachka, Strimas-Mackey, Ruiz Gutierrez, Miller, Auer, Kelling, Fink. Analytical guidelines to increase the value of citizen science data: using eBird data to estimate species occurrence, (In review)
+This repository contains the code and data to reproduce the analyses in a paper published in Diversity and Distributions: 
+Johnston, Hochachka, Strimas-Mackey, Ruiz Gutierrez, Miller, Auer, Kelling, Fink. (2021) Analytical guidelines to increase the value of community science data: An example using eBird data to estimate species distributions. _Diversity and Distributions_.
 
 For a more general and comprehensive guide to analysing eBird data, including more code, comments, and explanations, we recommend this alternative source of code: 
-Strimas-Mackey, Hochachka, Ruiz-Gutierrez, Robinson, Miller, Auer, Kelling, Fink, Johnston. 2020. Best Practices for Using eBird Data. Version 1.0. https://cornelllabofornithology.github.io/ebird-best-practices/. Cornell Lab of Ornithology, Ithaca, New York. https://doi.org/10.5281/zenodo.3620739
+Strimas-Mackey, Hochachka, Ruiz Gutierrez, Robinson, Miller, Auer, Kelling, Fink, Johnston. 2020. Best Practices for Using eBird Data. Version 1.0. https://cornelllabofornithology.github.io/ebird-best-practices/. Cornell Lab of Ornithology, Ithaca, New York. https://doi.org/10.5281/zenodo.3620739
 
+Here is a brief description of the scripts in this repo, that only produce the analyses and figures in the published paper. 
 
 ## Processing the data
 
@@ -18,7 +19,7 @@ Read in and prepare the BCR boundaries and mapping layers
 Filter the eBird data from a local version of the eBird Basic Dataset (EBD)
 select certain species, region, season. 
 
-In order to run this, you will need to download your own local version of the EBD and use `auk_set_ebd_path` to define the folder where this is located. BUT, the full dataset requires hundreds of GB of space and once you have downloaded this it takes 3-4 hours to run `01_ebird-data.R`. So proceed with caution! 
+In order to run this, you will need to download your own local version of the EBD from the eBird website and use `auk_set_ebd_path` to define the folder where this is located. BUT, the full dataset requires hundreds of GB of space and once you have downloaded this it takes 3-4 hours to run `01_ebird-data.R`. So proceed with caution! 
 
 `02_identify_bbs.R` 		
 Identify the BBS routes and stops that are within the eBird dataset
@@ -58,7 +59,7 @@ Runs a single encounter rate model, taking as parameters instructions about how 
 Takes the output from a fit_model_enc run and predicts to a given dataset
 
 `fit_model_occu`
-Runs a single occupancy model, taking as as parameters instructions about how to subsample the data and whether to fit covariates
+Runs a single occupancy model, taking as parameters instructions about how to subsample the data and whether to fit covariates
 
 `validate`
 Takes the output from a fit_model_enc run, predicts to a new dataset, then calculates performance metrics. 
