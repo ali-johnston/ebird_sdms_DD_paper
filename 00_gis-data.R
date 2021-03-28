@@ -2,6 +2,7 @@
 # only needs to be run once
 
 library(rnaturalearth)
+library(MODIS)
 library(readr)
 library(dplyr)
 library(sf)
@@ -9,18 +10,17 @@ library(sf)
 
 # modis setup ----
 
-# package setup
+# setup nasa earthdata credentials for modis package 
 EarthdataLogin(usr = "******", pwd = "******")
 
 
 # gis data ----
 
-f_ne <- "data_proc/gis-data2.gpkg"
+f_ne <- "data_proc/gis-data.gpkg"
 # bcrs
 tmp_dir <- tempdir()
 tmp_bcr <- file.path(tmp_dir, "bcr.zip")
-paste0("https://www.birdscanada.org/research/gislab/download/", 
-       "bcr_terrestrial_shape.zip") %>% 
+"https://www.birdscanada.org/download/gislab/bcr_terrestrial_shape.zip" %>% 
   download.file(destfile = tmp_bcr)
 unzip(tmp_bcr, exdir = tmp_dir)
 bcr <- file.path(tmp_dir, "BCR_Terrestrial_master_International.shp") %>% 
